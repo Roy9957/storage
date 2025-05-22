@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8" />
+    <title>ফাইল আপলোড ক্লায়েন্ট</title>
+</head>
+<body>
+    <h2>ফাইল আপলোড করো ভাই</h2>
+    <input type="file" id="fileInput" />
+    <button onclick="uploadFile()">আপলোড</button>
+
+    <p id="status"></p>
+
+    <script>
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput.files.length === 0) {
+                alert('ফাইল সিলেক্ট করো প্লিজ!');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('status').innerText = 'আপলোড শুরু হলো...';
+
+            try {
+                const response = await fetch('https://780cbabb124b89d8ed72aeb82f4946d2.serveo.net/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('সার্ভার থেকে ত্রুটি এসেছে!');
+                }
+
+                const data = await response.json();
+                document.getElementById('status').innerText = 'সাফল্যের সাথে আপলোড হয়েছে! ফাইল URL: ' + data.url;
+            } catch (error) {
+                document.getElementById('status').innerText = 'আপলোডে সমস্যা হয়েছে: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
